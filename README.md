@@ -6,9 +6,9 @@ Els objectius del projecte són els següents:
       Tant el codi com el temps de comte enrere seran configurables pel usuari. 
       El sistema es podrà desarmar abans d’obrir la porta des del mòbil del usuari.    
       
-    * Monitoratge del consum elèctric: Es vol monitorar el consum elèctric en kWh en temps real per mig d’una interfície i un gràfic. La interfície proporcionarà estadístiques del consum en un rang de temps que el usuari podrà escollir.
+* Monitoratge del consum elèctric: Es vol monitorar el consum elèctric en kWh en temps real per mig d’una interfície i un gràfic. La interfície proporcionarà estadístiques del consum en un rang de temps que el usuari podrà escollir.
       
-    * Monitoratge del consum d’aigua: Es vol fer un monitoratge similar al de consum elèctric anterior. En aquest cas la mesura seran la quantitat de litres consumits en un temps que el usuari pugui escollir.
+* Monitoratge del consum d’aigua: Es vol fer un monitoratge similar al de consum elèctric anterior. En aquest cas la mesura seran la quantitat de litres consumits en un temps que el usuari pugui escollir.
 
 Aquestes tres funcionalitats estaran incloses en una mateixa aplicació. 
 És un objectiu fonamental, què el sistema sencer sigui econòmic, encara que no molt precís en quan a les medicions. La intenció es que el usuari pugui determinar si els seus consums s’incrementen, decreixen o es mantenen, i pugui prendre les decisions per fer un consum racional i reduir-lo si es possible.
