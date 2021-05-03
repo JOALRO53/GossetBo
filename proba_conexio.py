@@ -1,3 +1,4 @@
+#!/usr/bin/python3.8
 import tkinter
 from tkinter import *
 import paho.mqtt.client as mqtt
@@ -15,8 +16,6 @@ class ProbaConexio():
 
         # Creació del objecte mqtt client paho del objecte ProbaConexio
         self.client = mqtt.Client()
-        #self.client.username_pw_set("joseantonio", "(Babilon3_X)")
-        ##self.client.connect("192.168.1.75", 1883, 60)
         self.client.connect("10.244.59.173", 1883, 60)
 
         #Assignació dels métodes de conexió i rebuda de missatges del objecte mqtt client
@@ -45,3 +44,7 @@ class ProbaConexio():
 proebaConexio = ProbaConexio()
 
 
+
+
+# self.client.username_pw_set("joseantonio", "(Babilon3_X)")
+##self.client.connect("192.168.1.75", 1883, 60)
