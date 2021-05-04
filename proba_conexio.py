@@ -32,13 +32,18 @@ class ProbaConexio():
         if rc == 0:
             print("Conectat")
             client.subscribe("EstatBoto")
+            client.subscribe("CodiEnviat")
         else:
-            print(f"(Conexion fallida con codigo: {rc}")
+            print(f"(Conexió fallida amb codi: {rc}")
 
     def on_message(self, client, userdata, msg):
         """ Métode de gestió del event de rebuda de missatges pel objete mqtt"""
         print(f"{msg.topic}{msg.payload}")
-        self.etiqueta.config(text=msg.payload)
+        #self.etiqueta.config(text=msg.payload)
+        if msg.topic == "EstatBoto":
+            self.etiqueta.config(text = "Estat del botó: " + msg.payload)
+        elif msg.topic == "CodiEnviat":
+            self.etiqueta.config(text = "Codi : " + str(msg.payload))
 
 # Iniciar el programa
 proebaConexio = ProbaConexio()
