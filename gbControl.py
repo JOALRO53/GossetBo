@@ -1,8 +1,9 @@
-#!/usr/bin/python3.8
+#!/usr/bin/python3.7
 import tkinter
 from tkinter import *
 import paho.mqtt.client as mqtt
 import struct
+import os
 
 class gbControl():
     def __init__(self):
@@ -54,14 +55,19 @@ class gbControl():
             self.estatboto = int(msg.payload)
             if not self.armat and self.estatboto == 1:
                 self.armat = True
-                self.etiqueta.config(text = "Sistema activat")
+                self.etiqueta.config(text = "Sistema activat")                
             elif self.armat and self.estatboto == 0:
                 self.etiqueta.config(text = "¡¡ WARNING !! ")
+                os.system("sh probaBot/bot.sh")
+                
             #self.etiqueta.config(text = "Estat del botó: " + msg.payload.decode("utf-8")) #decode per a convertir de bytes a string
         elif msg.topic == "CodiEnviat":
             if msg.payload.decode("utf-8") == self.codi:
                 self.etiqueta.config(text = "Sistema desactivat ")
+                client.publish("CodiCorrecte","Codi correcte")
                 self.armat = False
+            else:
+                client.publish("CodiCorrecte","Codi incorrecte")
             #self.etiqueta.config(text = "Codi : " + msg.payload.decode("utf-8"))
 
 # Iniciar el programa

@@ -51,7 +51,7 @@ import QtQuick 2.8
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.1
-import MqttClient 1.0
+import MqttClient 1.0 //<-- Importació del tipus MqttClient
 
 
 Window {
@@ -92,7 +92,6 @@ Window {
         anchors.margins: 10
         columns: 2
 
-
         TextField {
             id: portField
             Layout.fillWidth: true
@@ -102,7 +101,6 @@ Window {
             enabled: client.state === MqttClient.Disconnected
             visible: false
         }
-
 
         GridLayout {
             enabled: client.state === MqttClient.Connected
