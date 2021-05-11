@@ -4,22 +4,40 @@ from tkinter import *
 import paho.mqtt.client as mqtt
 import struct
 import os
+import subprocess
 
 class gbControl():
     def __init__(self):
         self.estatboto = 0
         self.codi = "12345"
         self.armat = False
+        self.p = None
 
+        fons = "SeaGreen"
+        fontRotuls = ("Arial", 17, "underline")
+        fontText = ("Arial",17)
         #Ventana gràfica per encabir la resta de ginys
         root = tkinter.Tk()
-        ancho, alto = root.winfo_screenheight(), root.winfo_screenwidth()
+        alto, ancho = root.winfo_screenheight(), root.winfo_screenwidth()
         root.title("Control de GossetBo")
-        root.geometry("%dx%d+0+0" % (alto, ancho))
+        #Definicio de fonts i colors
+        root.geometry("%dx%d+0+0" % (ancho, alto))
+        root.configure(bg=fons)
 
-        #Etiqueta per a mostrar missatges
-        self.etiqueta = Label(root, text='')
+        #Etiqueta rotul de l'estat del sistema de control
+        rotulControl = Label(root,text = 'Estat del sistema')
+        rotulControl.configure(font = fontRotuls,bg = fons)
+        rotulControl.place(x=100,y=150)
+
+        #Etiqueta per a mostrar l'estat del sistema de control
+        self.etiqueta = Label(root, text='Sistema desactivat')
         self.etiqueta.pack()
+        self.etiqueta.place(x=90,y=190,height = "30",width = "200")
+        self.etiqueta.configure(font=fontText)
+
+        #Etiqueta per a mostrar l'estat de conexió
+        self.lbConexio = Label(root,text = '')
+        self.lbConexio.place(x = ancho-120,y = 30, height = "30",width = "100")        
 
         # Creació del objecte mqtt client paho del objecte ProbaConexio
         self.client = mqtt.Client()
@@ -42,10 +60,11 @@ class gbControl():
             print("Conectat")
             client.subscribe("EstatBoto")
             client.subscribe("CodiEnviat")
-            #client.publish("sonoff_yo","OFF")
             client.subscribe("sonoff_yo")
+            self.lbConexio.configure(bg = "Chartreuse",text = "Connectat")
         else:
             print(f"(Conexió fallida amb codi: {rc}")
+            self.lbconexio.configure(bg = "Red",text = "Desconectat")
 
     def on_message(self, client, userdata, msg):
         """ Métode de gestió del event de rebuda de missatges pel objete mqtt"""
@@ -59,13 +78,18 @@ class gbControl():
             elif self.armat and self.estatboto == 0:
                 self.etiqueta.config(text = "¡¡ WARNING !! ")
                 os.system("sh probaBot/bot.sh")
+                client.publish("sonoff_yo","ON")                
+                os.system("python3 Camera.py")                
+                self.p = subprocess.Popen(['chromium-browser','http://127.0.0.1:8000'])
                 
             #self.etiqueta.config(text = "Estat del botó: " + msg.payload.decode("utf-8")) #decode per a convertir de bytes a string
         elif msg.topic == "CodiEnviat":
             if msg.payload.decode("utf-8") == self.codi:
                 self.etiqueta.config(text = "Sistema desactivat ")
                 client.publish("CodiCorrecte","Codi correcte")
-                self.armat = False
+                client.publish("sonoff_yo","OFF")                
+                self.p.kill()
+                self.armat = False                
             else:
                 client.publish("CodiCorrecte","Codi incorrecte")
             #self.etiqueta.config(text = "Codi : " + msg.payload.decode("utf-8"))

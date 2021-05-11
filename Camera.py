@@ -23,9 +23,10 @@ PAGE="""\
 
 class StreamingOutput(object):
     def __init__(self):
+        # Atributs de la classe
         self.frame = None
-        self.buffer = io.BytesIO()
-        self.condition = Condition()
+        self.buffer = io.BytesIO() # Buffer de bytes
+        self.condition = Condition() # Condició per a gestionar fils.
 
     def write(self, buf):
         if buf.startswith(b'\xff\xd8'):
@@ -84,7 +85,7 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
 with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
     output = StreamingOutput()
     #Uncomment the next line to change your Pi's Camera rotation (in degrees)
-    #camera.rotation = 90
+    camera.rotation = 180
     camera.start_recording(output, format='mjpeg')
     try:
         address = ('', 8000)
