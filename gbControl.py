@@ -69,7 +69,6 @@ class gbControl():
     def on_message(self, client, userdata, msg):
         """ Métode de gestió del event de rebuda de missatges pel objete mqtt"""
         print(f"{msg.topic}{msg.payload}")
-
         if msg.topic == "EstatBoto":
             self.estatboto = int(msg.payload)
             if not self.armat and self.estatboto == 1:
@@ -80,19 +79,19 @@ class gbControl():
                 os.system("sh probaBot/bot.sh")
                 client.publish("sonoff_yo","ON")                
                 os.system("python3 Camera.py")                
-                self.p = subprocess.Popen(['chromium-browser','http://127.0.0.1:8000'])
-                
-            #self.etiqueta.config(text = "Estat del botó: " + msg.payload.decode("utf-8")) #decode per a convertir de bytes a string
+                self.p = subprocess.Popen(['chromium-browser','http://127.0.0.1:8000'])                
+                #self.etiqueta.config(text = "Estat del botó: " + msg.payload.decode("utf-8")) #decode per a convertir de bytes a string
         elif msg.topic == "CodiEnviat":
             if msg.payload.decode("utf-8") == self.codi:
                 self.etiqueta.config(text = "Sistema desactivat ")
                 client.publish("CodiCorrecte","Codi correcte")
-                client.publish("sonoff_yo","OFF")                
-                self.p.kill()
+                client.publish("sonoff_yo","OFF")
+                if self.p != None:
+                    self.p.kill()
                 self.armat = False                
             else:
                 client.publish("CodiCorrecte","Codi incorrecte")
-            #self.etiqueta.config(text = "Codi : " + msg.payload.decode("utf-8"))
+                #self.etiqueta.config(text = "Codi : " + msg.payload.decode("utf-8"))
 
 # Iniciar el programa
 gbcontrol = gbControl()

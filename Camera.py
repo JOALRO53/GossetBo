@@ -21,7 +21,7 @@ PAGE="""\
 </html>
 """
 
-class StreamingOutput(object):
+class StreamingOutput(object): # Classe derivada d'object per a encapsular un buffer de bytes i un objecte condition per gestionar fils
     def __init__(self):
         # Atributs de la classe
         self.frame = None
@@ -39,7 +39,7 @@ class StreamingOutput(object):
             self.buffer.seek(0)
         return self.buffer.write(buf)
 
-class StreamingHandler(server.BaseHTTPRequestHandler):
+class StreamingHandler(server.BaseHTTPRequestHandler):# Clase derivada per a definir les tasques a realitzar quan es rep una nova petició de transmissió
     def do_GET(self):
         if self.path == '/':
             self.send_response(301)
@@ -78,18 +78,22 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
             self.send_error(404)
             self.end_headers()
 
+""" Classe derivada de socketserver.ThreadingMixIn i de server.HTTPserver per encapsular els seus mètodes
+    i atributs """
 class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
-    allow_reuse_address = True
-    daemon_threads = True
+    allow_reuse_address = True # Atribut de soketserver que permet reutilitzar adreces
+    daemon_threads = True # Atribut de ThreadingMixIn per indicar si el servidor ha d'esperar per a la finalització dels seus fils d'execució
 
-with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
-    output = StreamingOutput()
-    #Uncomment the next line to change your Pi's Camera rotation (in degrees)
+
+with picamera.PiCamera(resolution='640x480', framerate=24) as camera: # Crea un objecte PiCamera
+    output = StreamingOutput() # Crea un objecte StreamingOutput
+    #Rota l'imatge de la càmera
     camera.rotation = 180
-    camera.start_recording(output, format='mjpeg')
+    camera.start_recording(output, format='mjpeg') # Comença a gravar video i el desa al objecte StreamingOutput anterior
     try:
-        address = ('', 8000)
-        server = StreamingServer(address, StreamingHandler)
-        server.serve_forever()
+        address = ('', 8000) # Localhost i port 8000
+        server = StreamingServer(address, StreamingHandler) # Crea un objecte StreamingServer amb la direcció pasada com a primer argument i el
+                                                            #  controlador del event de recepció de peticions com a segon
+        server.serve_forever() # Gestionar peticions de transmissió fins a rebre una petició explicita de finalització
     finally:
         camera.stop_recording()
