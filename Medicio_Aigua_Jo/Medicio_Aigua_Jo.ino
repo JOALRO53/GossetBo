@@ -1,19 +1,28 @@
+#include <WiFiServer.h>
+#include <WiFi.h>
+#include <WiFiUdp.h>
+#include <WiFiClient.h>
+
 #include "Medicio_Aigua_Jo.h"
 #include "Qua.h"
+#include "WiFi_Credentials.h"
+
+
 
 #define llarg 100
 
 int canvis = 0; // Contador dels pulsos enviats pel sensor
 int temps = 0; // Contador de temps en milisegons
-int medicionsbuffer = 0; //Contador per registrar el nombre de medicions que hi ha al buffer
 
 float * qua;
 int nelements = 0;
 
+WiFiUDP udp;
+
 ///////////////////////////
 //
-//  DEFINICIO DE LES TASQUES , PIN DE LECTURA I
-//  INICIALITZACIÓ DE VARIABLES
+//  CREACIÓ DE LES TASQUES , ASSIGNACIÓ 
+//  PIN DE LECTURA I INICIALITZACIÓ DE VARIABLES
 //
 /////////////////////////////////
 //
@@ -51,8 +60,15 @@ void setup()
                     10000,            /* Stack size in bytes. */
                     NULL,             /* Parameter passed as input of the task */
                     1,                /* Priority of the task. */
-                    NULL);            /* Task handle. */
-                     
+                    NULL);
+ xTaskCreate(
+                    taskFour,         /* Task function. */
+                    "TaskFour",       /* String with name of task. */
+                    10000,            /* Stack size in bytes. */
+                    NULL,             /* Parameter passed as input of the task */
+                    1,                /* Priority of the task. */
+                    NULL);            /* Task handle. */                    
+ 
  
 }
 
@@ -143,7 +159,7 @@ void taskTwo( void * parameter)
 ///////////////////////////////////
 //
 //  COMPROBA QUE LA QUA NO ESTIGUI BUIDA, I 
-//  SI ES AIXÍ, TREU EL PRIMER VALOR DE LA QUA
+//  SI ES AIXÍ, TREU EL PRIMER VALOR
 //  PER ENVIAR-LO A INFLUXDB
 //
 /////////////////////////////
@@ -151,6 +167,8 @@ void taskTwo( void * parameter)
 void taskThree( void * parameter)
 {
   float valor = -1.0;
+  String linia;
+  
   while(true)
   {
     if(! quaBuida(nelements))
@@ -158,10 +176,48 @@ void taskThree( void * parameter)
       valor =  treureDeQua(qua,&nelements,llarg);
       char cadenavalor[16];
       sprintf(cadenavalor,"%f",valor);      
-      Serial.println("Valor: " + String(cadenavalor));
+      //Serial.println("Valor: " + String(cadenavalor));// concatenate the temperature into the line protocol
+      linia = "Llitres value= " + String(cadenavalor);
+      Serial.println(linia);
+  
+      // Enviament del packet a influxDB
+      Serial.println("Enviant UDP packet...");
+      udp.beginPacket(host, port);
+      udp.print(linia);
+      udp.endPacket();
+      
     }
      vTaskDelay(10);
   }
   vTaskDelete( NULL );
 }
+
+///////////////////////////////
+//
+// Conexió a la xarxa WiFi
+//
+////////////////////////////////////////
+//
+void taskFour( void * parameter)
+{
+  delay(10);
+  Serial.println();
+  Serial.print("Conexió a ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+ 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+    vTaskDelay(10);
+  }
+  
+  randomSeed(micros());
+  Serial.println("");
+  Serial.println("Conectat a WiFi");
+  Serial.println("Direcció IP: ");
+  Serial.println(WiFi.localIP());
+  vTaskDelete( NULL );
+}
+// Fi setup_wifi
       
