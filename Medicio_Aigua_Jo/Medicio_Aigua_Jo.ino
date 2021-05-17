@@ -171,13 +171,15 @@ void taskThree( void * parameter)
   
   while(true)
   {
+    if(WiFi.status() != WL_CONNECTED) { // En cas de no estar connectat a la xarxa
+      taskFour(NULL);
+    }
     if(! quaBuida(nelements))
     {
       valor =  treureDeQua(qua,&nelements,llarg);
       char cadenavalor[16];
       sprintf(cadenavalor,"%f",valor);      
-      //Serial.println("Valor: " + String(cadenavalor));// concatenate the temperature into the line protocol
-      linia = "consum litres=" + String(cadenavalor);
+      linia = "consum litres=" + String(cadenavalor); //Taula (consum), camp (litres) i valor
       Serial.println(linia);
   
       // Enviament del packet a influxDB

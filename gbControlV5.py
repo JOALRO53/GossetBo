@@ -1,11 +1,12 @@
 #!/usr/bin/python3.7
+
 import tkinter
 from tkinter import *
+from tkinter import messagebox
 import paho.mqtt.client as mqtt
 import struct
 import os
 import subprocess
-#import gbCamera
 import threading
 import configparser
 
@@ -20,8 +21,12 @@ class gbControl():
         self.p2 = None
 
         fons = "SeaGreen"
+        fonscapses = "LightGreen"
         fontRotuls = ("Arial", 17, "underline")
         fontText = ("Arial",17)
+        fontCapses = ("Arial",17)
+        fontAnotacions = ("Arial",13)
+        
         #Ventana gràfica per encabir la resta de ginys
         root = tkinter.Tk()
         alto, ancho = root.winfo_screenheight(), root.winfo_screenwidth()
@@ -44,6 +49,35 @@ class gbControl():
         #Etiqueta per a mostrar l'estat de conexió
         self.lbConexio = Label(root,text = '')
         self.lbConexio.place(x = ancho-120,y = 30, height = "30",width = "100")
+        
+        #Etiqueta per al rotul de canvi de codi de desactivació
+        rotulCanviCodi = Label(root,text = 'Canvi del codi de desactivació')
+        rotulCanviCodi.configure(font = fontRotuls,bg = fons)
+        rotulCanviCodi.place(x=50,y=250)
+        
+        #Capsa de text per introduir el codi actual
+        self.tbCodiActual = Entry(root);
+        self.tbCodiActual.configure(font = fontCapses,bg = fonscapses)
+        self.tbCodiActual.place(x = 75,y = 300, width = 250)
+        
+        #Etiqueta per la anotacio del codi actual
+        anotacioCodiActual = Label(root,text = 'Codi actual')
+        anotacioCodiActual.configure(font = fontAnotacions,bg = fons)
+        anotacioCodiActual.place(x=335,y=300)
+        
+        #Capsa de text per introduir el nou codi 
+        self.tbNouCodi = Entry(root);
+        self.tbNouCodi.configure(font = fontCapses,bg = fonscapses)
+        self.tbNouCodi.place(x = 75,y = 350, width = 250)
+        
+        #Etiqueta per la anotacio del nou codi
+        anotacioNouCodi = Label(root,text = 'Nou codi')
+        anotacioNouCodi.configure(font = fontAnotacions,bg = fons)
+        anotacioNouCodi.place(x=335,y=350)
+        
+        #Butó per aceptar el nou codi
+        btCanviCodi = Button(root,text = "Acceptar",bg = "GreenYellow",command = self.onBtCanviCodi_Clicked)
+        btCanviCodi.place(x = 165, y = 400)
 
         # Creació del objecte mqtt client paho del objecte ProbaConexio
         self.client = mqtt.Client()
@@ -98,7 +132,7 @@ class gbControl():
                 os.system("sh probaBot/bot.sh")
                 subsonoff = self.config['SUBCRIPTIONS']['SONOFF']
                 client.publish(subsonoff,"ON")
-                #Activar la camera i el servidor http en un altre process
+                #Activar la camera i el servidor http en un altre fil                
                 self.p2 = subprocess.Popen(['python3','gbCamera.py'])
                 #Obrir el navegador per veure el contingut de la càmera
                 self.p = subprocess.Popen(['chromium-browser','http://127.0.0.1:8000'])                
@@ -119,6 +153,22 @@ class gbControl():
                 self.armat = False                
             else:
                 client.publish(codiok,"Codi incorrecte")
+
+    def onBtCanviCodi_Clicked(self):
+        if self.tbCodiActual.get() != self.codi:
+            messagebox.showerror("Error", "Codi actual erroni")
+        elif len(self.tbNouCodi.get()) == 0:
+            messagebox.showerror("Error", "El nou codi no pot estar buit")
+        else:
+            self.codi = self.tbNouCodi.get()
+            self.config.set('GBCONTROL', 'CODI', self.codi)
+            # Writing our configuration file to 'example.ini'
+            with open('/home/xadnem/config.ini', 'w') as configfile:
+                self.config.write(configfile)
+            messagebox.showinfo("OK", "Codi de desactivació canviat")
+            self.tbCodiActual.delete(0,len(self.tbCodiActual.get()))
+            self.tbNouCodi.delete(0,len(self.tbNouCodi.get()))
+
 
 # Iniciar el programa
 gbcontrol = gbControl()
