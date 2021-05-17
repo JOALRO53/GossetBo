@@ -6,8 +6,8 @@ const char* password = "nq7FjbCn";
 
 
 //IP del meu host InfluxDB
-byte host[] = {10, 0, 1, 11};
+byte host[] = {192, 168, 1, 50};
 // El port pel què InfluxDB UDP plugin està escoltant
-int port = 8888;
+int port = 8089;
 
 

@@ -177,7 +177,7 @@ void taskThree( void * parameter)
       char cadenavalor[16];
       sprintf(cadenavalor,"%f",valor);      
       //Serial.println("Valor: " + String(cadenavalor));// concatenate the temperature into the line protocol
-      linia = "Llitres value= " + String(cadenavalor);
+      linia = "consum litres=" + String(cadenavalor);
       Serial.println(linia);
   
       // Enviament del packet a influxDB
@@ -219,5 +219,5 @@ void taskFour( void * parameter)
   Serial.println(WiFi.localIP());
   vTaskDelete( NULL );
 }
-// Fi setup_wifi
+
       
