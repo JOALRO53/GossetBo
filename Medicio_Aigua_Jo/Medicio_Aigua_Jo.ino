@@ -171,9 +171,11 @@ void taskThree( void * parameter)
   
   while(true)
   {
+    /*
     if(WiFi.status() != WL_CONNECTED) { // En cas de no estar connectat a la xarxa
       taskFour(NULL);
     }
+    */
     if(! quaBuida(nelements))
     {
       valor =  treureDeQua(qua,&nelements,llarg);
@@ -181,7 +183,6 @@ void taskThree( void * parameter)
       sprintf(cadenavalor,"%f",valor);      
       linia = "consum litres=" + String(cadenavalor); //Taula (consum), camp (litres) i valor
       Serial.println(linia);
-  
       // Enviament del packet a influxDB
       Serial.println("Enviant UDP packet...");
       udp.beginPacket(host, port);
@@ -191,6 +192,7 @@ void taskThree( void * parameter)
     }
      vTaskDelay(10);
   }
+  
   vTaskDelete( NULL );
 }
 
