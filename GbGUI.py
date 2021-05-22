@@ -17,9 +17,8 @@ class GbGUI:
         # Definicions de tipus de lletra i colors
         fons = "SeaGreen"
         fonscapses = "LightGreen"
-        fontRotuls = ("Arial", 17, "underline")
+        fontRetols = ("Arial", 17, "underline")
         fontText = ("Arial", 17)
-        fontCapses = ("Arial", 17)
         fontAnotacions = ("Arial", 13)
 
         # Ventana gràfica per encabir la resta de ginys
@@ -29,29 +28,29 @@ class GbGUI:
         self.root.geometry("%dx%d+0+0" % (ancho, alto))
         self.root.configure(bg=fons)
 
-        # Etiqueta rotul de l'estat del sistema de control
-        rotulControl = Label(self.root, text='Estat del sistema')
-        rotulControl.configure(font=fontRotuls, bg=fons)
-        rotulControl.place(x=100, y=150)
+        # Etiqueta retol de l'estat del sistema de control
+        retolControl = Label(self.root, text='Estat del sistema')
+        retolControl.configure(font=fontRetols, bg=fons)
+        retolControl.place(x=100, y=30)
 
         # Etiqueta per a mostrar l'estat del sistema de control
-        self.etiqueta = Label(self.root, text='Sistema desactivat')
-        self.etiqueta.pack()
-        self.etiqueta.place(x=90, y=190, height="30", width="200")
-        self.etiqueta.configure(font=fontText)
+        self.lbEstat = Label(self.root, text='Sistema desactivat')
+        self.lbEstat.pack()
+        self.lbEstat.place(x=90, y=60, height="30", width="200")
+        self.lbEstat.configure(font=fontText)
 
         # Etiqueta per a mostrar l'estat de conexió
         self.lbConexio = Label(self.root, text='')
         self.lbConexio.place(x=ancho - 120, y=30, height="30", width="100")
 
-        # Etiqueta per al rotul de canvi de codi de desactivació
-        rotulCanviCodi = Label(self.root, text='Canvi del codi de desactivació')
-        rotulCanviCodi.configure(font=fontRotuls, bg=fons)
-        rotulCanviCodi.place(x=50, y=250)
+        # Etiqueta per al retol de canvi de codi de desactivació
+        retolCanviCodi = Label(self.root, text='Canvi del codi de desactivació')
+        retolCanviCodi.configure(font=fontRetols, bg=fons)
+        retolCanviCodi.place(x=50, y=260)
 
         # Capsa de text per introduir el codi actual
         self.tbCodiActual = Entry(self.root);
-        self.tbCodiActual.configure(font=fontCapses, bg=fonscapses)
+        self.tbCodiActual.configure(font=fontText, bg=fonscapses)
         self.tbCodiActual.place(x=75, y=300, width=250)
 
         # Etiqueta per la anotacio del codi actual
@@ -61,7 +60,7 @@ class GbGUI:
 
         # Capsa de text per introduir el nou codi
         self.tbNouCodi = Entry(self.root)
-        self.tbNouCodi.configure(font=fontCapses, bg=fonscapses)
+        self.tbNouCodi.configure(font=fontText, bg=fonscapses)
         self.tbNouCodi.place(x=75, y=350, width=250)
 
         # Etiqueta per la anotacio del nou codi
@@ -72,36 +71,34 @@ class GbGUI:
         # Botó per aceptar el nou codi
         btCanviCodi = Button(self.root, text="Acceptar", bg="GreenYellow", command=self.onBtCanviCodi_Clicked)
         btCanviCodi.place(x=165, y=400)
-
         
-        # Etiqueta per retul del calendari de la data d'inici del gràfic
+        lbRetolGrafana = Label(self.root, text="Gràfics", bg="seagreen", fg="Black",
+                                   justify="left", anchor=W, font=fontRetols)
+        lbRetolGrafana.place(x = 120, y = 520)
+        
+        # Etiqueta per retol del calendari de la data d'inici del gràfic
         lbDataInici = Label(self.root, text="Inici de periode", bg="seagreen", fg="Black",
-                                   justify="left", anchor=W, font=("Dejavu", 17, "bold"))
-        lbDataInici.place(x = 70,y = 550)
+                                   justify="left", anchor=W, font=fontAnotacions)
+        lbDataInici.place(x = 250,y = 570)
         # EntryCalendar per a la data d'inici
         self.calendariinici = DateEntry(self.root, font = ("Dejavu", 13))
-        self.calendariinici.place(x=90, y=580)
+        self.calendariinici.place(x=90, y=570)
         
-        # # Etiqueta per retul del calendari de la data de fi del gràfic
-        self.lbDataFi = Label(self.root, text="Fi de periode", bg="seagreen", fg="Black",
-                                   justify="left", anchor=W, font=("Dejavu", 17, "bold"))
-        self.lbDataFi.place(x=70, y=650)
+        # # Etiqueta per retol del calendari de la data de fi del gràfic
+        lbDataFi = Label(self.root, text="Fi de periode", bg="seagreen", fg="Black",
+                                   justify="left", anchor=W, font=fontAnotacions)
+        lbDataFi.place(x=250, y=630)
         # Mostrar el EntryCalendar per a la data de fi del periode
         self.calendarifi = DateEntry(self.root, font = ("Dejavu", 13))
-        self.calendarifi.place(x=90, y=680)
+        self.calendarifi.place(x=90, y=630)
         
-        # Botó per obrir Grafana
-        btGrafana = Button(self.root, text="Grafana", bg="LightBlue", command=self.onBtGrafana_Clicked)
-        btGrafana.place(x=120, y=750)
-
-        # my_label = HTMLLabel(root, html="""<iframe src="http://127.0.0.1:3000/d/qox2hekgz/consum-aigua?orgId=1&from=1621221340905&to=1621264540905"></iframe>""")
-        # my_label.place(x=500,y = 200)
-        # my_label.configure(width = 100,height = 100)
-
-        # my_label = HTMLLabel(root, html="""<a href="http://127.0.0.1:3000/d/qox2hekgz/consum-aigua?orgId=1&from=1621221340905&to=1621264540905">hola</a>""")
-        # my_label.place(x=500,y = 200)
-        # my_label.configure(width = 100,height = 100)
-
+        # Botó per obrir el gràfic de consum d'aigua a Grafana
+        btAigua = Button(self.root, text="Aigua", bg="LightBlue", command=self.onBtGrafanaA_Clicked)
+        btAigua.place(x=90, y=690)
+        
+        # Botó per obrir el gràfic de consum de llum a Grafana
+        btLlum = Button(self.root, text="Llum", bg="RoyalBlue", command=self.onBtGrafanaL_Clicked)
+        btLlum.place(x=180, y=690)
         
 
     def onBtCanviCodi_Clicked(self):
@@ -121,7 +118,7 @@ class GbGUI:
                 messagebox.showerror("Error", "No s'ha canviat el codi de desactivació."+ GbSecretTopic.codi)
         
 
-    def onBtGrafana_Clicked(self):
+    def onBtGrafanaA_Clicked(self):
         # Datas de inici i final als calendaris
         inici = self.calendariinici.get_date()
         fi = self.calendarifi.get_date()
@@ -133,10 +130,20 @@ class GbGUI:
         unixfi = datetime.datetime.strptime(fib, '%Y/%m/%d').strftime("%s")
         uri = 'http://127.0.0.1:3000/d/qox2hekgz/consum-aigua?orgId=1&from='+unixinici+'999&to='+unixfi+'000'
         self.p = subprocess.Popen(['chromium-browser',uri])
-        #1621415304590
-        #print(uri)
-        #print(unixinici)
-        #print(unixfi)
+        
+        
+    def onBtGrafanaL_Clicked(self):
+        # Datas de inici i final als calendaris
+        inici = self.calendariinici.get_date()
+        fi = self.calendarifi.get_date()
+        # Obtindre els strings de les datas amb barra en lloc de guions
+        inicib = str(inici).replace("-","/")
+        fib = str(fi).replace("-","/")
+        # Obtindre el unix time de les datas
+        unixinici = datetime.datetime.strptime(inicib, '%Y/%m/%d').strftime("%s")
+        unixfi = datetime.datetime.strptime(fib, '%Y/%m/%d').strftime("%s")
+        uri = 'http://localhost:3000/d/riqt0ciRk/consum-llum?from='+unixinici+'999&to='+unixfi+'000'
+        self.p = subprocess.Popen(['chromium-browser',uri])
         
     
         #self.p = subprocess.Popen(['chromium-browser','http://127.0.0.1:3000/d/qox2hekgz/consum-aigua?orgId=1&from=1621221340905&to=1621264540905'])

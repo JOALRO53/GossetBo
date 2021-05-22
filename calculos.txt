@@ -1,0 +1,22 @@
+Calculo de la intensidad eficaz del aparato a medir. ( Bombilla 25W )
+
+Irms = W/V --> Irms = 25/220 = 0,113636 A
+
+---------------------------------------------------------------
+Calculo de la corriente pico
+
+Ipico = Irms * raiz de 2 --> 0,11636 * r2 = 0,1607 A
+---------------------------------------------------------------
+
+Corriente pico en el devanado secuendario del SCT013
+
+Np / Num Espiras = Intensidad en devanado / Ipico 
+	--> Intensidad en el devanado = ( Np * Ipico) / Num espiras
+	--> Intensidad en el devanado = ( 1 * 0,1607) / 2000 = 0,000080353 A
+---------------------------------------------------------------
+
+Calcular la resistencia a aplicar para llegar a la mitad del voltaje medido
+por la placa. En el caso de Arduino 5v/2 en el caso de nodeMCU 3,3v/2
+
+R = 5v/2 / Ipico --> R = 2,5 /0,1607 = 15,556 oms
+----------------------------------------------------------------

@@ -3,8 +3,9 @@
 from GbSecretTopic import *
 from GbGUI import GbGUI
 from GbMqtt import GbMqtt
-import os
+from os import system
 import subprocess
+
 
 class GbControl:
     def __ini__(self):
@@ -39,10 +40,10 @@ class GbControl:
             self.estatboto = int(msg.payload)
             if not self.armat and self.estatboto == 1:
                 self.armat = True
-                self.gui.etiqueta.config(text="Sistema activat")
+                self.gui.lbEstat.config(text="Sistema activat")
             elif self.armat and self.estatboto == 0:
-                self.gui.etiqueta.config(text="¡¡ WARNING !! ")
-                os.system("sh probaBot/bot.sh")
+                self.gui.lbEstat.config(text="¡¡ WARNING !! ")
+                system("sh probaBot/bot.sh")
                 self.mqttclient.publish(GbSecretTopic.subsonoff, "ON")
 
                 # Activar la camera i el servidor http en un altre fil
@@ -54,7 +55,7 @@ class GbControl:
                 # self.etiqueta.config(text = "Estat del botó: " + msg.payload.decode("utf-8")) #decode per a convertir de bytes a string
         elif msg.topic == GbSecretTopic.codienviat:
             if msg.payload.decode("utf-8") == GbSecretTopic.codi:
-                self.gui.etiqueta.config(text="Sistema desactivat ")
+                self.gui.lbEstat.config(text="Sistema desactivat ")
                 self.mqttclient.publish(GbSecretTopic.codiok, "Codi correcte")
                 client.publish(GbSecretTopic.sonoff, "OFF")
                 if self.p is not None:
@@ -70,15 +71,14 @@ class GbControl:
     def quan_connectat(self, client, userdata, flags, rc):
         #  Métode de conexió al broker mqtt
         if rc == 0:
-            for topic in self.mqttclient.llistaTopics:
-                self.mqttclient.subscribe(topic)
+            self.mqttclient.subscriureTopics()            
             self.mqttclient.connectat = True
             self.gui.lbConexio.configure(bg="Chartreuse", text="Connectat")
             print("Connectat")
         else:
             print(f"(Conexió fallida amb codi: {rc}")
             self.mqttclient.connectat = False
-
+            self.gui.lbConexio.configure(bg="Red", text="No connectat")
 
 
 
