@@ -1,7 +1,7 @@
-#include <WiFiServer.h>
+//#include <WiFiServer.h>
 #include <WiFi.h>
 #include <WiFiUdp.h>
-#include <WiFiClient.h>
+//#include <WiFiClient.h>
 
 #include "Medicio_Aigua_Jo.h"
 #include "Qua.h"
