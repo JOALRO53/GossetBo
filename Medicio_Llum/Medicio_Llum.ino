@@ -1,29 +1,29 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
-
-
-#include "Medicio_Llum.h"
 #include "Qua.h"
 #include "WiFi_Credentials.h"
 #include "RandomGenerator.h"
 
 
-
 #define llarg 100
 
-int watts = 0; // Contador de Watts 
-int tempsanterior = 0; // Per registrar el temps passat en milisegons
-int horas = 0; // Para contar horas
-
-int tapagado = 0; //Tiempo apagado
-int tencendido = 0; //Tiempo encendido
-float wattsh = 0;
 
 float * qua;
 int nelements = 0;
 
 float * quawh;
 int nelementswh = 0;
+
+
+int tempsanterior = 0; // Per registrar el temps passat en milisegons
+int horas = 0; // Para contar horas
+
+int tapagado = 0; //Temps apagat
+int tencendido = 0; //Temps ences
+
+float watts = 0; // Comptador de Watts 
+float wattsh = 0; // Comptador de WattsH
+
 
 WiFiUDP udp;
 
@@ -92,10 +92,10 @@ void loop(){} // Sense utilitat en aquest programa
 
 /////////////////////////////
 //
-//   SI tapagado NO ES CERO, COMPARA EL TIEMPO TRANSCURRIDO HASTA QUE ESTE ES IGUAL AL TIEMPO APAGADO, ENTONCES PONE A CERO Temps Y tapagado
-//   Y GENERA UN VALOR PARA tencendido.
-//   SI tencendido NO SES CERO, GENERA UN VALOR ALEATORIO DE Watts , LO METE EN LA CUA Y LO SUMA EN LA VARIABLE Wattsh, COMPARA EL TIEMPO TRANSCURRIDO Y
-//   CUANDO tencendido ES IGUAL A temps, PONE AMBOS A CERO Y GENERA UN VALOR PARA tapagado
+//   SI tapagado NO ES ZERO, COMPARA EL TEMPS TRANSCURREGUT FINS QUE AQUEST ES IGUAL AL TEMPS D'APAGAT, LLAVORS POSA A ZERO Temps I tapagado
+//   P GENERA UN VALOR PER A tencendido.
+//   SI tencendido NO ES ZERO, GENERA UN VALOR ALEATORI DE Watts , EL FICA A LA CUA Y LO SUMA EN LA VARIABLE Wattsh, COMPARA EL TEMPS TRANSCURREGUT I
+//   QUAN tencendido ES IGUAL A temps, POSA TOTS DOS A ZERO I GENERA UN VALOR PER A tapagado
 //
 ////////////////////////////////////
 //
@@ -109,7 +109,7 @@ void taskOne( void * parameter )
     Serial.println("Apagado");
     if((millis()-tempsanterior) >= tapagado)
     {
-      Serial.println("Tiempo apagado cumplido");
+      Serial.println("Temps apagat complert");
       tencendido = generarTiempoEncendido();
       tapagado = 0;
       tempsanterior = millis();     
@@ -118,14 +118,14 @@ void taskOne( void * parameter )
     {
      delay(10000);
      float w = 0;    
-     Serial.print("Añadido a qua: ");
+     Serial.print("Afegit a cua: ");
      Serial.println(w);
      afegirAQua(w,qua, &nelements,llarg);
     }
    }
    else if(tencendido > 0)
    {
-    Serial.println("Encendido");
+    Serial.println("Ences");
     if(millis()-tempsanterior >= tencendido)
     {
       tapagado = generarTiempoApagado();
@@ -150,8 +150,8 @@ void taskOne( void * parameter )
 
 ///////////////////////////////////
 //
-//  COMPRUEBA SI horas A LLEGADO A 3600000 MILISEGUNDO
-//  Y SI ES ASI, METE Wattsh EN quawh I PONE horas y wattsh a cero
+//  COMPROVA SI horas A ARRIVAT A 3600000 MILISEGONS
+//  I SI ES AIXI, FICA Wattsh EN quawh I POSA horas y wattsh A ZERO
 //
 /////////////////////////////
 //
@@ -177,8 +177,8 @@ void taskTwo( void * parameter)
 
 ///////////////////////////////////
 //
-//  COMPRUEBA SI ALGUNA DE LAS QUAS NO ESTA VACIA
-//  Y SI ES ASI, SACA EL PRIMER VALOR Y LO SUBE A INFLUXDB
+//  COMPROBA SI ALGUNA DE LES QUAS NO ESTA BUIDA
+//  I SI ES AIXI, TREU EL PRIMER VALOR Y EL PUJA A INFLUXDB
 //
 /////////////////////////////
 //

@@ -2,21 +2,21 @@
 #include<stdlib.h>
 #include<time.h>
 
-/* Genera tiempo apagado entre 23 y 27 minutos en segundos */
+/* Genera temps d'apagat entre 23 i 27 minuts en segons */
 int generarTiempoApagado() 
 {
   srand(time(NULL));
-  return rand()%240000+1380000;//Entre 23 y 27 minutos (n-m)+n n = 1620 segundos ; m = 1380 segundos
+  return rand()%240000+1380000;//Entre 23 y 27 minuts (n-m)+n n = 1620 segons ; m = 1380 segons
 }
 
-/* Genera tiempo encendido entre 20 y 24 minutos en segundos */
+/* Genera temps ences entre 20 y 24 minuts en segons */
 int generarTiempoEncendido()
 {
   srand(time(NULL));
-  return rand()%240000+1440000;//Entre 20 y 24 minutos (n-m)+n n = 1440 segundos ; m = 1200 segundos
+  return rand()%240000+1440000;//Entre 20 y 24 minuts (n-m)+n n = 1440 segons ; m = 1200 segons
 }
 
-/* Genera Watios entre 170 y 190 */
+/* Genera Watts entre 170 y 190 */
 float generarValor()
 {
   srand(time(NULL));
